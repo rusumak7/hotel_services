@@ -14,8 +14,8 @@ import java.util.List;
  */
 @Validated
 @RestController
-@RequestMapping("/api/v1/services")
-public class ServiceController {
+@RequestMapping("/api/v1/booking")
+public class BookingController {
     // TODO: Заготовка метода обработки POST-запросов на создание или частичное изменение услуги
     @PostMapping
     public Long createService(@Valid @RequestBody ServiceRequestDTO serviceRequest) {
