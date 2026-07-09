@@ -12,31 +12,31 @@ import java.util.List;
 
 /**
  * DTO запроса на бронирование от клиента
- * @param hotelName
- * @param roomType
- * @param guestsList
- * @param arrival
- * @param departure
- * @param mealTypes
+ *
+ * @param hotelName  - название отеля
+ * @param roomType   - вместимость номера
+ * @param guestsList - список гостей
+ * @param arrival    - время заезда
+ * @param departure  - время выезда
+ * @param mealTypes  - включенные в бронирование услуги по питанию
  */
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record BookingRequestDTO (
-    @NotBlank
-    @NotEmpty
-    @NotNull
-    String hotelName,
-    @NotNull
-    HotelRooms roomType,
-    @NotEmpty
-    @NotNull
-    List<Guest>guestsList,
-    @FutureOrPresent
-    @NotNull
-    LocalDateTime arrival,
-    @Future
-    @NotNull
-    LocalDateTime departure,
-    @NotEmpty
-    @NotNull
-    List<HotelServices> mealTypes
-) {}
+public record BookingRequestDTO(
+        @NotBlank
+        String hotelName,
+        @NotNull
+        HotelRooms roomType,
+        @NotEmpty
+        @NotNull
+        List<Guest> guestsList,
+        @FutureOrPresent
+        @NotNull
+        LocalDateTime arrival,
+        @Future
+        @NotNull
+        LocalDateTime departure,
+        @NotEmpty
+        @NotNull
+        List<HotelServices> mealTypes
+) {
+}

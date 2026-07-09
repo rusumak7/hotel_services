@@ -43,8 +43,14 @@ public class BookingService {
         return null;
     }
 
-    public BookingResponseDTO cancelBooking(int id) {
-        return null;
-    }
+    /**
+     * Метод удаления (отмены) бронирования
+     *
+     * @param id - идентификатор брони
+     * @return результат успешности операции (true or false)
+     */
+    public Boolean cancelBooking(Long id) {
 
+        return BookingDAO.cancel(id);
+    }
 }

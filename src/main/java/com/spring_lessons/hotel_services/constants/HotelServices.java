@@ -15,7 +15,7 @@ public enum HotelServices {
         this.mealType = mealType;
     }
 
-    public String getMealType(){
+    public String getMealType() {
         return mealType;
     }
 

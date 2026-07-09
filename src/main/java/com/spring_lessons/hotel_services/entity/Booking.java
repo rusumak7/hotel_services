@@ -76,14 +76,6 @@ public class Booking {
 
     @Override
     public String toString() {
-        return "Booking{" +
-                "id=" + id +
-                ", hotelName='" + hotelName + '\'' +
-                ", roomType=" + roomType +
-                ", guestsList=" + guestsList +
-                ", arrival=" + arrival +
-                ", departure=" + departure +
-                ", mealTypes=" + mealTypes +
-                '}';
+        return "Booking{" + "id=" + id + ", hotelName='" + hotelName + '\'' + ", roomType=" + roomType + ", guestsList=" + guestsList + ", arrival=" + arrival + ", departure=" + departure + ", mealTypes=" + mealTypes + '}';
     }
 }
