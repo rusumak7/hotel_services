@@ -1,6 +1,7 @@
 package com.spring_lessons.hotel_services.controller;
 
 import com.spring_lessons.hotel_services.dto.BookingRequestDTO;
+import com.spring_lessons.hotel_services.dto.BookingResponseDTO;
 import com.spring_lessons.hotel_services.service.BookingService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -12,6 +13,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 
@@ -32,7 +35,9 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
-    /* Метод обработки POST-запросов на создание бронирования номеров
+    /**
+     * Метод обработки POST-запросов на создание бронирования номеров
+     *
      * @param bookingRequestDTO
      * @param servletRequest
      * @return id брони
@@ -48,7 +53,7 @@ public class BookingController {
      * Метод обработки DELETE запросов на отмену бронирования
      *
      * @param id брони
-     * @return в теле информацию об успешности операции
+     * @return в теле ответа информацию об успешности операции
      */
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> cancelBooking(@PathVariable Long id) {
@@ -56,30 +61,73 @@ public class BookingController {
 
         Boolean isCanceled = bookingService.cancelBooking(id);
         if (isCanceled) {
-            return ResponseEntity.ok().body(Map.of("success", true, "message", "Бронирование с id " + id + " успешно отменено"));
+            return ResponseEntity.ok().body(Map.of("success", true,
+                    "message", "Бронирование с id " + id + " успешно отменено"));
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("success", false, "message", "Бронирование с id " + id + " не найдено в системе"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("success", false,
+                    "message", "Бронирование с id " + id + " не найдено в системе"));
+        }
+    }
+
+    /**
+     * Метод обработки PUT запросов на изменение бронирования
+     *
+     * @param id        - идентификатор брони
+     * @param arrival   - время заезда
+     * @param departure - время выезда
+     * @return в теле ответа информацию об успешности операции
+     */
+    @PutMapping("/edit")
+    public ResponseEntity<?> editBooking(@Valid @RequestParam("id") Long id,
+                                         @Valid @RequestParam("arrival") LocalDateTime arrival,
+                                         @Valid @RequestParam("departure") LocalDateTime departure) {
+
+        log.info("PUT запрос. Редактирование бронирования c id {}", id);
+        BookingResponseDTO editResponseDTO = bookingService.editBooking(id, arrival, departure);
+
+        if (editResponseDTO == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("success", false,
+                            "message", "Бронирование с id " + id + " не найдено в системе"));
         }
 
+        return ResponseEntity.ok().body(editResponseDTO);
+    }
 
-//
-//    @PutMapping
-//    public Object editBooking(@Valid @RequestParam("service_name") String serviceName) {
-//        return null;
-//    }
+    /**
+     * Метод обработки GET запросов на получение всех записей бронирования
+     *
+     * @return список бронирований
+     */
+    @GetMapping("/all")
+    public ResponseEntity<?> getBookingsList() {
+        log.info("GET запрос. Получение всех записей бронирования");
 
-        // TODO: Заготовка метода обработки GET-запросов на получение списка услуг
-//    @GetMapping
-//    public List<Guest> getServicesList() {
-//
-//        return null;
-//    }
+        List<BookingResponseDTO> bookings = bookingService.getAllBookings();
 
-//    // TODO: Заготовка метода обработки GET-запросов на получение услуги по id
-//    @GetMapping("/{id}")
-//    public Object getServiceById(@Positive @PathVariable Long id) {
-//
-//        return null;
-//    }
+        if (bookings.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("success", false,
+                            "message", "Бронирования не найдены в системе"));
+        }
+
+        return ResponseEntity.ok().body(bookings);
+    }
+
+    /**
+     * Метод обработки GET запросов на получения списка услуг, включенных в бронирование
+     *
+     * @param id - идентификатор брони
+     * @return список услуг
+     */
+    @GetMapping("/services/{id}")
+    public ResponseEntity<?> getServicesList(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok().body(bookingService.getAllServicesInBooking(id));
+        } catch (NullPointerException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("success", false,
+                            "message", "Бронирование c id " + id + " не найдено в системе"));
+        }
     }
 }

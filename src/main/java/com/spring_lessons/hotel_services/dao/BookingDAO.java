@@ -4,7 +4,9 @@ import com.spring_lessons.hotel_services.entity.Booking;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -48,5 +50,33 @@ public class BookingDAO {
 
         log.info("Бронирование с id {} отменено", id);
         return true;
+    }
+
+    /**
+     * Метод извлекает бронирование по id из "БД"
+     *
+     * @param id - идентификатор брони
+     * @return бронирование
+     */
+    public static Booking getById(Long id) {
+        Booking booking = bookingDB.get(id);
+
+        if (booking == null) {
+            log.warn("Бронирование с id {} не найдено в БД", id);
+            return null;
+        }
+
+        log.info("Бронирование с id {} успешно найдено", id);
+
+        return booking;
+    }
+
+    /**
+     * Метод извлекает список всех бронирований из "БД"
+     *
+     * @return список бронирований
+     */
+    public static List<Booking> getAllBookings() {
+        return new ArrayList<>(bookingDB.values());
     }
 }
