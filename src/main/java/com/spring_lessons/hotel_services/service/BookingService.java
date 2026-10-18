@@ -5,6 +5,8 @@ import com.spring_lessons.hotel_services.dao.BookingDAO;
 import com.spring_lessons.hotel_services.dto.BookingRequestDTO;
 import com.spring_lessons.hotel_services.dto.BookingResponseDTO;
 import com.spring_lessons.hotel_services.entity.Booking;
+import com.spring_lessons.hotel_services.repository.BookingRepository;
+import com.spring_lessons.hotel_services.repository.GuestRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,6 +19,15 @@ import java.util.List;
  */
 @Service
 public class BookingService {
+
+    private final BookingRepository bookingRepository;
+    private final GuestRepository guestRepository;
+
+    public BookingService(BookingRepository bookingRepository, GuestRepository guestRepository) {
+        this.bookingRepository = bookingRepository;
+        this.guestRepository = guestRepository;
+    }
+
     /**
      * Метод создания бронирования из DTO -> в Entity
      */

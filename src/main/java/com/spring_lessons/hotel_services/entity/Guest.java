@@ -1,5 +1,6 @@
 package com.spring_lessons.hotel_services.entity;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import tools.jackson.databind.PropertyNamingStrategies;
 import tools.jackson.databind.annotation.JsonNaming;
@@ -7,14 +8,33 @@ import tools.jackson.databind.annotation.JsonNaming;
 /**
  * Гость (постоялец) отеля
  */
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@Entity
+@Table(name = "guests")
 public class Guest {
-    @NotNull
+    @Id
+    // Стратегия генерации PK:
+    // IDENTITY — БД сама назначает id (AUTO_INCREMENT / SERIAL).
+    // Альтернативы: AUTO (по умолчанию), SEQUENCE, TABLE, UUID.
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "guest_id")
+    private Long guestId;
+
+    @Column(name = "first_name", nullable = false)
     private String firstName;
-    @NotNull
+
+    @Column(name = "last_name", nullable = false)
     private String lastName;
-    @NotNull
+
+    @Column(name = "age", nullable = false)
     private Integer age;
+
+    // Много Guest → один Booking.
+    // LAZY           — Booking подгружается при обращении к guest.getBooking().
+    // optional=false — гость обязательно должен быть привязан к бронированию (NOT NULL).
+    // @JoinColumn    — колонка booking_id в таблице guests = FK на bookings.booking_id.
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "booking_id", nullable = false, foreignKey = @ForeignKey(name = "fk_guests_booking"))
+    private Booking booking;
 
     public String getFirstName() {
         return firstName;
